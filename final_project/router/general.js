@@ -42,8 +42,15 @@ public_users.get('/isbn/:isbn',function (req, res) {
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
   const author = req.params.author.toLowerCase();
-  const filtered_books = Object.values(books).filter((book) => book.author.toLowerCase() === author);
-  res.send(JSON.stringify(filtered_books, 4)); 
+  
+  getBooksByAuthor(author).then((books) =>
+    res.send(JSON.stringify(books, 4)),
+    (error) => {
+      return res.status(404).json({message: error})
+    }
+  )
+
+
 });
 
 // Get all books based on title
@@ -77,7 +84,7 @@ function getBooks() {
 
 // Task 11 Add the code for getting the book details based on ISBN using Promise callbacks or async-await with Axios.
 function getBooksByISBN(isbn) {
-  let book = books[isbn];
+  const book = books[isbn];
   return new Promise((resolve, reject) => {
     if(!book) {
       reject("Book not found");
@@ -85,7 +92,20 @@ function getBooksByISBN(isbn) {
       resolve(book);
     }
   });
-
 }
+
+// Task 12 Add the code for getting the book details based on Author using Promise callbacks or async-await with Axios.
+function getBooksByAuthor(author) {
+  const filtered_books = Object.values(books).filter((book) => book.author.toLowerCase() === author);
+  return new Promise((resolve, reject) => {
+    if(filtered_books.length > 0){
+      resolve(filtered_books)
+    } else {
+      reject("Books not found")
+    }
+  }
+    
+
+)};
 
 module.exports.general = public_users;
