@@ -23,7 +23,9 @@ public_users.post("/register", (req,res) => {
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
-  res.send(JSON.stringify(books, 4));
+  getBooks().then((bks) => {
+    res.send(JSON.stringify(bks, 4));
+  })
 });
 
 // Get book details based on ISBN
@@ -61,5 +63,12 @@ public_users.get('/review/:isbn',function (req, res) {
   res.send(JSON.stringify(bookReviews, 4));
   
 });
+
+//Task 10 Add the code for getting the list of books available in the shop using Promise callbacks or async-await with Axios.
+function getBooks() {
+  return new Promise((resolve, reject) => {
+    resolve(books);
+  });
+}
 
 module.exports.general = public_users;
