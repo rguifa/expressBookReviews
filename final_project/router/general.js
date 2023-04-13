@@ -49,15 +49,19 @@ public_users.get('/author/:author',function (req, res) {
       return res.status(404).json({message: error})
     }
   )
-
-
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   const title = req.params.title.toLowerCase();
-  const filtered_books = Object.values(books).filter((book) => book.title.toLowerCase() === title);
-  res.send(JSON.stringify(filtered_books, 4)); 
+  // const filtered_books = Object.values(books).filter((book) => book.title.toLowerCase() === title);
+  // res.send(JSON.stringify(filtered_books, 4)); 
+  getBooksByTitle(title).then((books) =>
+    res.send(JSON.stringify(books, 4)),
+    (error) => {
+      return res.status(404).json({message: error})
+    }
+  )
 });
 
 //  Get book review
@@ -104,8 +108,20 @@ function getBooksByAuthor(author) {
       reject("Books not found")
     }
   }
-    
-
 )};
+
+// Task 13 Add the code for getting the book details based on Title using Promise callbacks or async-await with Axios.
+function getBooksByTitle(title) {
+  const filtered_books = Object.values(books).filter((book) => book.title.toLowerCase() === title);
+  return new Promise((resolve, reject) => {
+    if(filtered_books.length > 0){
+      resolve(filtered_books)
+    } else {
+      reject("Books not found")
+    }
+  }
+)};
+
+
 
 module.exports.general = public_users;
