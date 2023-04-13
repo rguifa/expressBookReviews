@@ -31,9 +31,13 @@ public_users.get('/',function (req, res) {
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
   const isbn = req.params.isbn;
-  res.send(books[isbn]);
 
- });
+  getBooksByISBN(isbn).then((book) =>
+    res.send(JSON.stringify(book, 4)),
+    (error) => {
+      return res.status(404).json({message: error})
+    }) 
+});
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
@@ -69,6 +73,19 @@ function getBooks() {
   return new Promise((resolve, reject) => {
     resolve(books);
   });
+}
+
+// Task 11 Add the code for getting the book details based on ISBN using Promise callbacks or async-await with Axios.
+function getBooksByISBN(isbn) {
+  let book = books[isbn];
+  return new Promise((resolve, reject) => {
+    if(!book) {
+      reject("Book not found");
+    } else {
+      resolve(book);
+    }
+  });
+
 }
 
 module.exports.general = public_users;
